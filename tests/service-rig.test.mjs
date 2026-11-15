@@ -9,7 +9,7 @@ test('spawn is centred above the service deck and its perimeter slopes to the fl
 });
 test('both service claws reach inward and retract away from the robot symmetrically',()=>{
  const root=new T.Group(),material=new T.MeshBasicMaterial(),M=Object.fromEntries(['black','chrome','orange','white','dark'].map(k=>[k,material]));
- const arms=[makeServiceArm(root,M,-1.65,-2.3,1),makeServiceArm(root,M,3.85,-2.3,-1)];
+ const arms=[makeServiceArm(root,M,SERVICE.x-2.75,SERVICE.z-.1,1),makeServiceArm(root,M,SERVICE.x+2.75,SERVICE.z-.1,-1)];
  root.updateMatrixWorld(true);const before=arms.map(a=>a.tip.getWorldPosition(new T.Vector3()));
  assert.ok(before[0].x>arms[0].root.position.x+2);assert.ok(before[1].x<arms[1].root.position.x-2);
  assert.ok(Math.abs((before[0].x+before[1].x)/2-SERVICE.x)<1e-8);
