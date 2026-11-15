@@ -46,8 +46,7 @@ export function makeWorld(scene,M,low){
  box(root,M.dark,0,.15,10.2,1.25,.3,2);for(const s of [-1,1])box(root,M.white,s*.9,.7,10.3,.2,1.4,1.9);label(root,'UNIT 07 / SERVICE INCOMPLETE',0,1.6,12.3,3,.35,{ry:Math.PI,color:'#ddc895'});box(root,M.panel,0,4.1,13.4,18,8,.4);
  const starterTools=[];for(const side of [-1,1]){const tool=new T.Group();scene.add(tool);box(tool,M.steel,0,0,0,.15,.2,.7);box(tool,M.white,0,.05,-.45,.22,.18,.25);cyl(tool,M.chrome,0,.02,-.65,.055,.28,'z');ring(tool,M.cyan,0,.02,-.8,.08,.015);for(const k of [-1,1])box(tool,M.chrome,k*.1,-.06,-.73,.035,.16,.04);tool.userData.side=side;starterTools.push(tool);}
  const cargoCollider={x:-3.3,z:-1.1,w:1.8,d:1.5};const cargoOccluder=new T.Box3(new T.Vector3(-4.2,0,-1.85),new T.Vector3(-2.4,1.4,-.35));
- // Haze beams use sparse translucent geometry. They convey light, not heavy fluid simulation.
- const beamMat=new T.MeshBasicMaterial({color:0xa9cfca,transparent:true,opacity:.028,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide});for(const z of [-7,1,8]){const beam=new T.Mesh(new T.CylinderGeometry(.25,2.2,7,20,1,true),beamMat);beam.position.set(-3.7,4,z);scene.add(beam);}
+ // Ambient haze and dust support the wall and ceiling lights without decorative light cones.
  const dustGeo=new T.BufferGeometry(),dustPos=new Float32Array(240*3);for(let i=0;i<240;i++){dustPos[i*3]=(rand()-.5)*17;dustPos[i*3+1]=rand()*8;dustPos[i*3+2]=(rand()-.5)*24;}dustGeo.setAttribute('position',new T.BufferAttribute(dustPos,3));const dust=new T.Points(dustGeo,new T.PointsMaterial({color:0xc9d8be,size:.025,transparent:true,opacity:.45,depthWrite:false}));scene.add(dust);
  const alarmLight=point(0xff522c,0,0,5,1,17);bake(root);
  // A restrained sheen on a manufactured floor; optional and excluded on low quality.

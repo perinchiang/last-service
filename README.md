@@ -23,7 +23,7 @@ The build produces a self-contained `index.html`. Desktop keyboard and mouse are
 
 ## Checkpoints
 
-Major development stages are committed individually. The first playable is developed on `feat/first-playable`; GitHub Pages serves that branch while its pull request remains open. The repository's default branch is `main`.
+Major development stages are committed individually on feature branches, then merged by pull request after their checks pass. Published releases on GitHub Pages follow the repository's default branch, `main`.
 
 ## Credits
 

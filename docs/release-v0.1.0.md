@@ -2,6 +2,8 @@
 
 Play: https://perinchiang.github.io/last-service/
 
+Lighting refinement: removed the three conspicuous translucent light cones along the left aisle. Wall and ceiling fixtures now carry the room's illumination, with the floor reflection retained.
+
 ## This version
 
 A code-generated maintenance hall, a skippable awakening, mechanical arms, moving ventilation fans, industrial lighting and a restrained floor reflection. One pulse rifle with procedural mechanical hands and synthesized sound. Explore the room, inspect the access terminal, shoot the red interlock, survive two waves of security drones and operate the terminal to open the exit. The suspended cargo can be released by shooting its glowing latch.

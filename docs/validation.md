@@ -17,8 +17,12 @@
 - Portrait framing reduces the first-person weapon footprint. Touch cancellation resets held actions.
 - Build identity includes JavaScript, HTML and CSS; the title screen can request a cache-busted refresh.
 
+## Lighting refinement — BUILD `04c5e372`
+
+Removed the three translucent cone meshes from the left aisle after visual feedback. Compared the same camera position before and after in Chrome: the conspicuous cone silhouettes are gone, the actual lights and floor reflection remain, and no uncaught browser errors occurred. All 5 Node checks passed on the rebuilt single-file distribution.
+
 ## Delivery
 
 The distributable is a single index.html including Three.js, generated geometry, shaders, textures and procedural Web Audio. There are no external game assets, fonts, runtime libraries or backend requirements. Development dependencies are locked in package-lock.json.
 
-GitHub Pages serves the feat/first-playable branch. The pull request remains open; main is not merged automatically. Desktop is the main target. Mobile provides simple playtesting controls and defaults to a lighter rendering path. Four-legged enemies are outside this first release.
+GitHub Pages publishes the main branch after the approved pull-request merge. Desktop is the main target. Mobile provides simple playtesting controls and defaults to a lighter rendering path. Four-legged enemies are outside this first release.
