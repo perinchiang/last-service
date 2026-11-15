@@ -1,5 +1,11 @@
 # LAST SERVICE · 最后一次检修
 
+[**在线试玩 v0.1.0**](https://perinchiang.github.io/last-service/) · [版本说明与操作](docs/release-v0.1.0.md) · [验证记录](docs/validation.md)
+
+人类已经消失，自动设施仍在执行回收命令。作为一台刚刚苏醒的机器人，检查门禁、击毁封锁装置、抵挡两波安保无人机，再亲手打开出口。场景、机械动画、枪械和音效均由代码生成。
+
+电脑：WASD 移动，鼠标瞄准，左键射击，E 交互，R 换弹，Esc 暂停。手机：左侧摇杆移动、右侧拖动视角，使用开火、交互和换弹按钮；建议横屏。主菜单的“检查更新”可刷新到最新部署，底部 BUILD 标识用于核对版本。
+
 A small first-person journey through an automated facility that has outlived its makers. Explore, break the lock, survive security and find a way out.
 
 All scene geometry, surface textures, animation and sound are generated in code with Three.js and Web Audio. No external art assets or runtime network dependencies.
@@ -8,6 +14,7 @@ All scene geometry, surface textures, animation and sound are generated in code 
 
 ```sh
 npm ci
+npm test
 npm run build
 npm run dev
 ```
@@ -16,7 +23,7 @@ The build produces a self-contained `index.html`. Desktop keyboard and mouse are
 
 ## Checkpoints
 
-Major development stages are committed individually. The first playable is developed on `feat/first-playable`; the Pages preview will follow that branch while its pull request remains open.
+Major development stages are committed individually. The first playable is developed on `feat/first-playable`; GitHub Pages serves that branch while its pull request remains open. The repository's default branch is `main`.
 
 ## Credits
 
