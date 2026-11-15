@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {Reflector} from 'three/addons/objects/Reflector.js';
+import {makeFloorReflection} from './floor-reflection.js';
 import {box,cyl,ring,pipe,label,bake,rng} from './art.js';
 import {SERVICE,makeServiceArm,poseServiceArm} from './service-rig.js';
 import {HALL} from './layout.js';
@@ -31,6 +31,7 @@ export function makeWorld(scene,M,low){
   }
   for(const z of HALL.bays){
    box(root,M.dark,side*10.3,4.4,z,.64,8.8,.62);
+   solid(side*10.3,z,.65,.65,8.8);
    box(root,M.steel,side*9.95,4.45,z,.1,8.25,.48);
    box(root,M.black,side*10.15,.25,z,1,.5,.95);
    box(root,M.steel,side*10.1,8.45,z,1.15,.55,.9);
@@ -75,6 +76,8 @@ export function makeWorld(scene,M,low){
   const k=.94;beam(root,M.cyan,[a[0]*k,a[1]*k+.12,gz+.49],[b[0]*k,b[1]*k+.12,gz+.49],.032,.03);
  }
  box(root,M.black,0,.04,gz,8.7,.12,1.2);box(root,M.steel,0,6.83,gz-.1,7.4,.34,.65);
+ box(root,M.dark,0,7.16,gz-.06,6.8,1.15,.45);
+ for(const s of [-1,1]){box(root,M.dark,s*3.56,3.35,gz-.04,.76,6.7,.65);box(root,M.chrome,s*3.24,3.3,gz+.3,.06,6.6,.08);}
  label(root,'09  /  TRANSFER LOCK',0,7.18,gz+.58,3.3,.22,{color:'#c0d8d4'});
  for(const side of [-1,1]){
   const g=new T.Group();scene.add(g);g.userData.side=side;g.position.set(side*1.6,0,gz);
@@ -84,7 +87,7 @@ export function makeWorld(scene,M,low){
   for(const y of [1.5,5.25])bolts.push(box(g,M.chrome,-side*1.27,y,.51,.45,.16,.21));
   label(g,side<0?'0':'9',side*.17,3.9,.48,.74,.66,{color:'#9dafa9',size:170});doorParts.push(g);
  }
- point(0xa9d5dd,55,0,5.6,gz+1.6,11);
+ point(0xa9d5dd,30,-2.5,5.6,gz+1.6,11);
  const outside=new T.Group();scene.add(outside);box(outside,M.dark,0,-.5,gz-25,80,.8,55);
  for(let z=gz-6;z>gz-50;z-=9){for(const s of [-1,1]){box(outside,M.dark,s*10,9,z,1.2,18,1.2);box(outside,M.steel,s*7,15,z,14,.45,.8);box(outside,M.light,s*6,14.73,z,1.5,.04,.4);}box(outside,M.dark,0,18,z,35,.7,1.2);}
  for(let i=0;i<26;i++){const x=(rand()-.5)*65,z=gz-13-rand()*38;box(outside,M.dark,x,2+rand()*5,z,2+rand()*3,4+rand()*10,3+rand()*3);}bake(outside);
@@ -139,7 +142,7 @@ export function makeWorld(scene,M,low){
  box(root,M.panel,0,4.5,HALL.back+.2,22,9,.4);label(root,'AUTONOMOUS RECLAMATION / 07',0,5.6,HALL.back-.04,6,.32,{ry:Math.PI,color:'#9fb3ac'});
  const dustGeo=new T.BufferGeometry(),dustPos=new Float32Array(180*3);for(let i=0;i<180;i++){dustPos[i*3]=(rand()-.5)*20;dustPos[i*3+1]=rand()*8;dustPos[i*3+2]=HALL.front+rand()*depth;}dustGeo.setAttribute('position',new T.BufferAttribute(dustPos,3));const dust=new T.Points(dustGeo,new T.PointsMaterial({color:0xb5cecd,size:.018,transparent:true,opacity:.25,depthWrite:false}));scene.add(dust);
  const alarmLight=point(0xe6583d,0,0,5,-14,17);bake(root);
- const sheen=new Reflector(new T.PlaneGeometry(21.5,depth-.15),{textureWidth:1024,textureHeight:768,multisample:0,color:0x7f999b,clipBias:.004});sheen.rotation.x=-Math.PI/2;sheen.position.set(0,-.025,mid);sheen.material.transparent=true;sheen.material.depthWrite=false;sheen.material.fragmentShader=sheen.material.fragmentShader.replace('gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );','gl_FragColor = vec4( blendOverlay( base.rgb, color ), 0.22 );');sheen.visible=!low;scene.add(sheen);
+ const sheen=makeFloorReflection(21.5,depth-.15,mid,low);scene.add(sheen);
  return {layout:HALL,colliders,occluders,serviceLift,interlock,terminal,screen,cargo,latch,cable,sheen,exitLight,doorParts,arms,alarmLight,root,awakeProgress:1,doorOpen:0,cargoFall:false,cargoY:C.y,cargoVelocity:0,
   update(dt,time,alarm=false){
    serviceLift.position.y=-SERVICE.liftTravel*this.awakeProgress;liftOccluder.max.y=2.37+serviceLift.position.y;for(const f of fans)f.rotation.z+=dt*1.1;for(const a of arms)poseServiceArm(a,this.awakeProgress,time);dust.rotation.y=Math.sin(time*.03)*.005;alarmLight.intensity=alarm?8+Math.sin(time*5)*5:0;
