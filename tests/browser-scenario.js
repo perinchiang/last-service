@@ -3,7 +3,7 @@
  if(!g?.begin)throw new Error('Open the game with ?qa=1 before running this scenario.');
  const check=(name,pass,details)=>checks.push({name,pass:!!pass,...(details?{details}:{})});
  g.stop();g.begin(true);g.interact();check('Distant terminal cannot be operated',!g.snapshot.inspected);
- g.input.keys.add('KeyA');for(let i=0;i<70;i++)g.step(.025,false);g.input.reset();check('Keyboard movement changes world position',g.snapshot.player.x<-4.8);
+ const startZ=g.snapshot.player.z;g.input.keys.add('KeyW');for(let i=0;i<70;i++)g.step(.025,false);g.input.reset();check('Keyboard movement changes world position',g.snapshot.player.z<startZ-4.8);
  g.setPose(-4.6,-6.35);g.interact();g.aimAt(-3.78,1.15,-8.7);g.fire();check('Actual raycast breaks the interlock and spawns wave one',g.snapshot.phase==='combat'&&g.snapshot.active===3);
  for(let wave=0;wave<2;wave++){
   for(const e of g.enemies.list.slice(wave*3,wave*3+3))for(let i=0;i<4&&e.active;i++){

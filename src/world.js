@@ -1,6 +1,7 @@
 import * as T from 'three';
 import {Reflector} from 'three/addons/objects/Reflector.js';
 import {box,cyl,ring,pipe,label,bake,rng} from './art.js';
+import {SERVICE,makeServiceArm,poseServiceArm} from './service-rig.js';
 export function makeWorld(scene,M,low){
  const root=new T.Group();scene.add(root);const colliders=[],occluders=[],arms=[],fans=[],doorParts=[],bolts=[];const rand=rng(401);
  const solid=(x,z,w,d,h=2)=>{colliders.push({x,z,w,d});occluders.push(new T.Box3(new T.Vector3(x-w/2,0,z-d/2),new T.Vector3(x+w/2,h,z+d/2)));};
@@ -23,13 +24,17 @@ export function makeWorld(scene,M,low){
  const door=new T.Group();scene.add(door);for(const side of [-1,1]){const g=new T.Group();door.add(g);g.userData.side=side;g.position.x=side*1.72;box(g,M.steel,0,3.2,-12.72,3.42,6.4,.45);box(g,M.dark,0,3.2,-12.45,3.06,5.95,.1);for(let y=.45;y<6.3;y+=.6){box(g,M.panel,0,y,-12.35,2.95,.48,.14);box(g,M.black,0,y-.17,-12.25,2.8,.022,.025);}box(g,M.orange,-side*1.1,3,-12.19,.3,5.4,.05);for(let y=1;y<6;y+=1.2){const b=box(g,M.chrome,-side*1.4,y,-12.12,.6,.16,.22);bolts.push(b);}label(g,side<0?'09':'↑',0,3.5,-12.12,1.6,1.4,{color:'#324a49',size:170});doorParts.push(g);}
  const outside=new T.Group();scene.add(outside);box(outside,M.dark,0,-.5,-35,100,.8,65);for(let z=-19;z>-65;z-=9){for(const s of [-1,1]){box(outside,M.dark,s*12,10,z,2,20,2);box(outside,M.orange,s*12,7,z+.1,2.1,.5,2.1);box(outside,M.steel,s*10,16,z,18,.6,1.3);box(outside,M.light,s*7,15.6,z,1.5,.08,.6);}box(outside,M.dark,0,19,z,44,1,1.5);}for(let i=0;i<35;i++){const x=(rand()-.5)*80,z=-25-rand()*45;box(outside,M.panel,x,2+rand()*7,z,2+rand()*4,4+rand()*14,3+rand()*3);}bake(outside);const exitLight=point(0xb9e3e2,0,0,4.5,-14,25);
  // Service platform; its shape and ring lights define the room's focal point.
- cyl(root,M.black,1.1,.22,-2.2,2.4,.4,'y',12);cyl(root,M.steel,1.1,.48,-2.2,2.1,.16,'y',12);ring(root,M.amber,1.1,.58,-2.2,1.94,.025,Math.PI/2);solid(1.1,-2.2,3.8,3.8,.65);solid(1.1,-2.2,1.4,2.1,2.35);
- cyl(root,M.dark,1.1,1.1,-2.2,.82,1.1,'y',10);cyl(root,M.chrome,1.1,1.72,-2.2,.64,.15,'y',12);box(root,M.white,1.1,2.05,-2.2,1.4,.5,2.1);box(root,M.orange,1.1,2.33,-2.2,.36,.08,1.8);
+ const deck=new T.Mesh(new T.CylinderGeometry(2.1,2.4,.6,12),M.black);deck.position.set(SERVICE.x,.26,SERVICE.z);deck.castShadow=deck.receiveShadow=true;root.add(deck);
+ cyl(root,M.steel,1.1,.48,-2.2,2.1,.16,'y',12);ring(root,M.amber,1.1,.58,-2.2,1.94,.025,Math.PI/2);
+ occluders.push(new T.Box3(new T.Vector3(-1,0,-4.3),new T.Vector3(3.2,.58,-.1)));
+ const serviceLift=new T.Group();scene.add(serviceLift);
+ cyl(serviceLift,M.dark,1.1,1.1,-2.2,.82,1.1,'y',10);cyl(serviceLift,M.chrome,1.1,1.72,-2.2,.64,.15,'y',12);box(serviceLift,M.white,1.1,2.05,-2.2,1.4,.5,2.1);box(serviceLift,M.orange,1.1,2.33,-2.2,.36,.08,1.8);
+ const liftOccluder=new T.Box3(new T.Vector3(.4,0,-3.25),new T.Vector3(1.8,2.37,-1.15));occluders.push(liftOccluder);
  for(const x of [-1.2,3.4]){box(root,M.dark,x,3.45,-3.6,.36,6.9,.5);box(root,M.orange,x,2,-3.29,.39,1.2,.05);box(root,M.amber,x,4.9,-3.3,.04,2.1,.04);}
  box(root,M.steel,1.1,6.7,-3.6,5.4,.38,.6);label(root,'AUTONOMOUS / RECLAMATION',1.1,6.08,-3.22,4.6,.4,{color:'#dddbb9'});
  const armRoot=new T.Group();scene.add(armRoot);
- function arm(x,z,side){const g=new T.Group();g.position.set(x,.65,z);armRoot.add(g);cyl(g,M.black,0,.12,0,.38,.3);cyl(g,M.chrome,0,.55,0,.2,.6);const shoulder=new T.Group();shoulder.position.y=.8;g.add(shoulder);cyl(shoulder,M.orange,0,0,0,.33,.45,'z');box(shoulder,M.white,side*.58,.7,0,.35,1.8,.4,-side*.65);const fore=new T.Group();fore.position.set(side*1.12,1.4,0);shoulder.add(fore);cyl(fore,M.dark,0,0,0,.24,.5,'z');box(fore,M.white,-side*.5,.1,0,1.2,.25,.32,side*.18);box(fore,M.dark,-side*1.05,.04,0,.22,.4,.38);for(const dz of [-.25,.25])box(fore,M.chrome,-side*1.12,-.16,dz,.07,.45,.07,side*.2);arms.push({shoulder,fore,side});}
- arm(-1.65,-2.3,1);arm(3.85,-2.3,-1);
+ arms.push(makeServiceArm(armRoot,M,-1.65,-2.3,1),makeServiceArm(armRoot,M,3.85,-2.3,-1));
+ for(const x of [-1.65,3.85])solid(x,-2.3,.65,.65,1.5);
  pipe(root,M.rubber,[[-1.2,6.5,-3.6],[-.7,5,-3],[.6,4,-2.3],[1.1,3.1,-2.2]],.055);
  // Side equipment and readable maintenance clutter.
  for(let z of [-8,-4,0,4]){box(root,M.dark,8.1,1.2,z,1.3,2.4,2.4);box(root,M.panel,7.42,1.28,z,.06,2.1,2.2);for(let n=0;n<8;n++)box(root,M.black,7.36,1.2+n*.09,z,.025,.025,1.5);label(root,'C-'+(z+10),7.32,2.05,z,.7,.25,{ry:-Math.PI/2});solid(8.1,z,1.3,2.4,2.4);}
@@ -42,17 +47,16 @@ export function makeWorld(scene,M,low){
  const cargo=new T.Group();cargo.position.set(-3.3,4.4,-1.1);scene.add(cargo);box(cargo,M.orange,0,0,0,1.8,1.3,1.5);for(const x of [-.75,.75])box(cargo,M.steel,x,0,0,.12,1.42,1.62);box(cargo,M.dark,0,-.6,0,1.85,.15,1.6);label(cargo,'02 / HEAVY',0,.08,.76,1.4,.3,{color:'#212e2c'});const cable=box(root,M.chrome,-3.3,6,-1.1,.04,2,.04);cable.userData.keep=true;const latch=box(scene,M.amber,-3.3,5.16,-.15,.48,.3,.28);label(root,'LIFT LOCK',-3.3,5.65,.02,1.2,.25,{color:'#ebc88a'});
  // Warm light wells and rotating ventilation fans.
  for(const z of [-8,5]){box(root,M.black,-8.73,5.5,z,.1,2.1,2.1);const f=new T.Group();f.position.set(-8.6,5.5,z);f.rotation.y=Math.PI/2;scene.add(f);ring(f,M.steel,0,0,0,.85,.065);const rotor=new T.Group();f.add(rotor);for(let i=0;i<5;i++){const blade=box(rotor,M.chrome,0,.36,0,.22,.7,.04);blade.rotation.z=i*Math.PI*2/5;blade.position.set(Math.sin(-blade.rotation.z)*.36,Math.cos(blade.rotation.z)*.36,0);}fans.push(rotor);cyl(f,M.black,0,0,0,.19,.2,'z');point(0xffb06b,14,-7.9,5.4,z,8);}
- // Starter cradle at the near end; no collision to obstruct awakening.
- box(root,M.dark,0,.15,10.2,1.25,.3,2);for(const s of [-1,1])box(root,M.white,s*.9,.7,10.3,.2,1.4,1.9);label(root,'UNIT 07 / SERVICE INCOMPLETE',0,1.6,12.3,3,.35,{ry:Math.PI,color:'#ddc895'});box(root,M.panel,0,4.1,13.4,18,8,.4);
- const starterTools=[];for(const side of [-1,1]){const tool=new T.Group();scene.add(tool);box(tool,M.steel,0,0,0,.15,.2,.7);box(tool,M.white,0,.05,-.45,.22,.18,.25);cyl(tool,M.chrome,0,.02,-.65,.055,.28,'z');ring(tool,M.cyan,0,.02,-.8,.08,.015);for(const k of [-1,1])box(tool,M.chrome,k*.1,-.06,-.73,.035,.16,.04);tool.userData.side=side;starterTools.push(tool);}
+ // Unit 07 now wakes on the central lift, between these working arms.
+ label(root,'UNIT 07 / SERVICE INCOMPLETE',1.1,.3,.13,2.4,.2,{color:'#ddc895'});box(root,M.panel,0,4.1,13.4,18,8,.4);
  const cargoCollider={x:-3.3,z:-1.1,w:1.8,d:1.5};const cargoOccluder=new T.Box3(new T.Vector3(-4.2,0,-1.85),new T.Vector3(-2.4,1.4,-.35));
  // Ambient haze and dust support the wall and ceiling lights without decorative light cones.
  const dustGeo=new T.BufferGeometry(),dustPos=new Float32Array(240*3);for(let i=0;i<240;i++){dustPos[i*3]=(rand()-.5)*17;dustPos[i*3+1]=rand()*8;dustPos[i*3+2]=(rand()-.5)*24;}dustGeo.setAttribute('position',new T.BufferAttribute(dustPos,3));const dust=new T.Points(dustGeo,new T.PointsMaterial({color:0xc9d8be,size:.025,transparent:true,opacity:.45,depthWrite:false}));scene.add(dust);
  const alarmLight=point(0xff522c,0,0,5,1,17);bake(root);
  // A restrained sheen on a manufactured floor; optional and excluded on low quality.
  const sheen=new Reflector(new T.PlaneGeometry(17.6,25.8),{textureWidth:768,textureHeight:512,multisample:0,color:0x718b8b,clipBias:.004});sheen.rotation.x=-Math.PI/2;sheen.position.y=-.025;sheen.material.transparent=true;sheen.material.opacity=.16;sheen.material.depthWrite=false;const frag=sheen.material.fragmentShader;sheen.material.fragmentShader=frag.replace('gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );','gl_FragColor = vec4( blendOverlay( base.rgb, color ), 0.15 );');sheen.visible=!low;scene.add(sheen);
- return {colliders,occluders,interlock,terminal,screen,cargo,latch,cable,sheen,exitLight,doorParts,arms,alarmLight,root,awakeProgress:1,doorOpen:0,cargoFall:false,cargoY:4.4,cargoVelocity:0,
- update(dt,time,alarm=false){for(const a of starterTools){a.position.set(a.userData.side*(.4+this.awakeProgress*1.2),1.65+this.awakeProgress*.65,10.05+this.awakeProgress*.5);a.rotation.y=a.userData.side*this.awakeProgress*.8;}for(const f of fans)f.rotation.z+=dt*1.5;for(const a of arms){a.shoulder.rotation.z=Math.sin(time*.65+a.side)*.12;a.fore.rotation.z=Math.sin(time*.8)*.16;}dust.rotation.y=Math.sin(time*.03)*.02;alarmLight.intensity=alarm?12+Math.sin(time*5)*10:0;for(const p of doorParts)p.position.x=p.userData.side*(1.72+this.doorOpen*3.5);exitLight.intensity=this.doorOpen*120;for(let i=0;i<bolts.length;i++)bolts[i].position.z=-12.12-Math.min(1,this.doorOpen*6)*.2;if(this.cargoFall&&this.cargoY>.72){this.cargoVelocity+=dt*9;this.cargoY=Math.max(.72,this.cargoY-this.cargoVelocity*dt);cargo.position.y=this.cargoY;cable.visible=false;latch.visible=false;if(this.cargoY===.72&&!colliders.includes(cargoCollider)){colliders.push(cargoCollider);occluders.push(cargoOccluder);}}},
+ return {colliders,occluders,serviceLift,interlock,terminal,screen,cargo,latch,cable,sheen,exitLight,doorParts,arms,alarmLight,root,awakeProgress:1,doorOpen:0,cargoFall:false,cargoY:4.4,cargoVelocity:0,
+ update(dt,time,alarm=false){serviceLift.position.y=-SERVICE.liftTravel*this.awakeProgress;liftOccluder.max.y=2.37+serviceLift.position.y;for(const f of fans)f.rotation.z+=dt*1.5;for(const a of arms)poseServiceArm(a,this.awakeProgress,time);dust.rotation.y=Math.sin(time*.03)*.02;alarmLight.intensity=alarm?12+Math.sin(time*5)*10:0;for(const p of doorParts)p.position.x=p.userData.side*(1.72+this.doorOpen*3.5);exitLight.intensity=this.doorOpen*120;for(let i=0;i<bolts.length;i++)bolts[i].position.z=-12.12-Math.min(1,this.doorOpen*6)*.2;if(this.cargoFall&&this.cargoY>.72){this.cargoVelocity+=dt*9;this.cargoY=Math.max(.72,this.cargoY-this.cargoVelocity*dt);cargo.position.y=this.cargoY;cable.visible=false;latch.visible=false;if(this.cargoY===.72&&!colliders.includes(cargoCollider)){colliders.push(cargoCollider);occluders.push(cargoOccluder);}}},
  reset(){this.awakeProgress=0;const ci=colliders.indexOf(cargoCollider);if(ci>=0)colliders.splice(ci,1);const oi=occluders.indexOf(cargoOccluder);if(oi>=0)occluders.splice(oi,1);this.doorOpen=0;this.cargoFall=false;this.cargoY=4.4;this.cargoVelocity=0;cargo.position.y=4.4;cable.visible=true;latch.visible=true;interlock.visible=true;interlock.material=M.red;}
  };
 }

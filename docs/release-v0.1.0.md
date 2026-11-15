@@ -10,9 +10,11 @@ A code-generated maintenance hall, a skippable awakening, mechanical arms, movin
 
 ## Controls
 
-Desktop: WASD / arrows to move, mouse to look, left click to fire, right click to aim, E to interact, R to reload, Shift to move faster, C to lower the body, Esc to pause. If pointer lock is unavailable, dragging the scene also turns the view.
+Desktop: WASD / arrows to move, mouse to look, left click to fire, hold right click to aim and left click together to shoot, E to interact, R to reload, Shift to move faster, C to lower the body, Esc to pause. If pointer lock is unavailable, dragging the scene also turns the view. Mouse sensitivity can be adjusted in the title and pause menus. Raw mouse input is requested where supported, lock transitions discard their first displacement, and discontinuities or accumulated bursts are filtered.
 
-Phone: left pad to move, drag the right side to look, use the fire / interact / reload buttons. Landscape is recommended. Mobile controls are intended for convenient playtesting.
+Phone: left pad to move and drag the right side to look. Tap the fire button for one unzoomed shot, or hold it for 0.24 seconds to aim and fire continuously. Release to stop firing and leave aim. There is no separate aim button. Movement and looking remain available while firing. Landscape is recommended. Mobile controls are intended for convenient playtesting.
+
+Awakening and restart now share the central service deck. Both claws reach inward over the robot, then retract as the lift lowers. The deck has a walkable perimeter, so the player can leave without getting trapped inside its collision geometry.
 
 Automatic repair begins after five seconds without damage. Capacitors are unlimited but magazines require reloading. The HUD always shows the current objective. Use the pause or result menu to restart.
 
