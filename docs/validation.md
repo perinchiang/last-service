@@ -23,6 +23,15 @@ Removed the three translucent cone meshes from the left aisle after visual feedb
 
 ## Delivery
 
+## Input and service rig refinement — BUILD `ed6911ca`
+
+- 19 Node checks passed: mouse-button chords in both orders, independent release, raw-input fallback and duplicate lock prevention, transition/jump filtering, bounded accumulated motion, focus loss, touch tap/hold/cancel/multitouch, sight alignment through recoil and portrait scaling, central-deck height and mirrored inward service claws.
+- The original browser mission scenario passed 16/16 checks on this build. The new `tests/browser-input-scenario.js` passed another 16/16 checks against the actual event handlers and renderer: held aim plus fire, projected sight centre, central restart, walking off the platform, awakening/lift/arm sequence, and phone tap/hold/release with simultaneous movement and looking.
+- Touch checks used a 390 × 844 same-origin iframe in managed Chrome. Desktop checks ran in Chrome on the Mac; Windows relative-motion discontinuities were reproduced as injected event sequences in the Node checks. Physical Windows mouse behaviour and physical iPhone Safari were not tested.
+- Inspected the actual rendered sight and inward-facing service rig. No uncaught browser errors were reported.
+
+## Distribution
+
 The distributable is a single index.html including Three.js, generated geometry, shaders, textures and procedural Web Audio. There are no external game assets, fonts, runtime libraries or backend requirements. Development dependencies are locked in package-lock.json.
 
 GitHub Pages publishes the main branch after the approved pull-request merge. Desktop is the main target. Mobile provides simple playtesting controls and defaults to a lighter rendering path. Four-legged enemies are outside this first release.
