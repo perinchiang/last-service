@@ -1,0 +1,13 @@
+import { build } from 'esbuild';
+import { readFile,writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const root=new URL('../',import.meta.url);
+const bundle=await build({entryPoints:[new URL('src/main.js',root).pathname],bundle:true,format:'iife',minify:true,write:false,target:['es2020'],legalComments:'inline',define:{__VERSION__:'"0.1.0"'}});
+const js=bundle.outputFiles[0].text;
+const hash=createHash('sha256').update(js).digest('hex').slice(0,8);
+let html=await readFile(new URL('src/shell.html',root),'utf8');
+const css=await readFile(new URL('src/style.css',root),'utf8');
+const license=await readFile(new URL('node_modules/three/LICENSE',root),'utf8');
+html=html.replace('/*__CSS__*/',css).replace('/*__JS__*/',()=>js.replace(/<\/script/gi,'<\\/script')).replaceAll('__BUILD__',hash).replace('<!--__LICENSE__-->','<!-- Three.js license\n'+license+'-->');
+await writeFile(new URL('index.html',root),html);
+console.log('Built index.html · v0.1.0 · '+hash+' · '+Math.round(Buffer.byteLength(html)/1024)+' KiB');
