@@ -1,7 +1,7 @@
 async () => {
  const g=window.__game,checks=[],check=(name,pass)=>checks.push({name,pass:!!pass});
- g.stop();g.begin(true);
- check('Restart places the player on the central service deck',g.snapshot.player.x===1.1&&g.snapshot.player.z===-2.2&&Math.abs(g.snapshot.player.y-2.33)<.001);
+ g.stop();g.begin(true);const spawn={...g.snapshot.player};
+ check('Restart places the player on the central service deck',Math.abs(g.snapshot.player.x)<.001&&g.snapshot.player.z>0&&Math.abs(g.snapshot.player.y-2.33)<.001);
  const c=document.querySelector('#world');
  c.dispatchEvent(new MouseEvent('mousedown',{button:2,buttons:2,bubbles:true}));
  c.dispatchEvent(new MouseEvent('mousedown',{button:0,buttons:3,bubbles:true}));
@@ -13,12 +13,12 @@ async () => {
  check('Releasing left preserves right-button aim',g.input.aim&&!g.input.fire);
  window.dispatchEvent(new MouseEvent('mouseup',{button:2,buttons:0}));
  g.begin(true);g.input.keys.add('KeyW');for(let i=0;i<70;i++)g.step(.025,false);g.input.reset();
- check('The player walks off the deck without getting stuck',g.snapshot.player.z<-7&&Math.abs(g.snapshot.player.y-1.72)<.03);
- g.begin(false);g.step(.3,false);check('Awakening uses the same central position',g.camera.position.x===1.1&&g.camera.position.z===-2.2);
+ check('The player walks off the deck without getting stuck',g.snapshot.player.z<spawn.z-4.8&&Math.abs(g.snapshot.player.y-1.72)<.03);
+ g.begin(false);g.step(.3,false);check('Awakening uses the same central position',g.camera.position.x===spawn.x&&g.camera.position.z===spawn.z);
  for(let i=0;i<70;i++)g.step(.1,false);
  check('Awakening lowers the lift and enters play',g.state==='play'&&Math.abs(g.world.serviceLift.position.y+1.78)<.001);
  const tips=g.world.arms.map(a=>a.tip.getWorldPosition(a.tip.position.clone()));
- check('Service claws retract clear of the player',tips[0].x<-.8&&tips[1].x>3);
+ check('Service claws retract clear of the player',tips[0].x<spawn.x-2&&tips[1].x>spawn.x+2);
  const f=document.createElement('iframe');f.id='phone-regression';f.style.cssText='position:fixed;inset:0;width:390px;height:844px;border:0;z-index:100';
  f.src=location.pathname+'?qa=1&touch=1&v='+Date.now();
  await new Promise(resolve=>{f.onload=resolve;document.body.appendChild(f);});

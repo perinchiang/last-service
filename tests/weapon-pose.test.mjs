@@ -9,3 +9,11 @@ test('aimed optical centre projects onto the firing ray in desktop and portrait 
   const centre=weapon.group.localToWorld(weapon.sight.clone()).project(camera);assert.ok(Math.abs(centre.x)<1e-9);assert.ok(Math.abs(centre.y)<1e-9);
  }
 });
+
+test('reload removes and reseats the magazine independently of the receiver',()=>{
+ const weapon={group:new T.Group(),sight:new T.Vector3(0,.225,-.062),magazine:new T.Group(),bolt:new T.Group(),support:new T.Group()};
+ poseWeapon(weapon,{});const seated=weapon.magazine.position.clone();
+ poseWeapon(weapon,{reloadTime:.9});assert.ok(weapon.magazine.position.y<seated.y-.2);
+ poseWeapon(weapon,{reloadTime:.16});assert.ok(weapon.magazine.position.distanceTo(seated)<.001);assert.ok(weapon.bolt.position.z>.05);
+ poseWeapon(weapon,{reloadTime:0});assert.ok(weapon.magazine.position.distanceTo(seated)<.001);assert.equal(weapon.bolt.position.z,.04);
+});
