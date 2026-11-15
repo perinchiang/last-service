@@ -1,6 +1,6 @@
 # LAST SERVICE · 最后一次检修
 
-[**在线试玩 v0.1.0**](https://perinchiang.github.io/last-service/) · [版本说明与操作](docs/release-v0.1.0.md) · [验证记录](docs/validation.md)
+[**在线试玩 v0.1.1**](https://perinchiang.github.io/last-service/) · [版本说明与操作](docs/release-v0.1.1.md) · [验证记录](docs/validation.md)
 
 人类已经消失，自动设施仍在执行回收命令。作为一台刚刚苏醒的机器人，检查门禁、击毁封锁装置、抵挡两波安保无人机，再亲手打开出口。场景、机械动画、枪械和音效均由代码生成。
 

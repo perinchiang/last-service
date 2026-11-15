@@ -28,6 +28,19 @@ Removed the three translucent cone meshes from the left aisle after visual feedb
 - Touch checks used a 390 × 844 same-origin iframe in managed Chrome. Desktop checks ran in Chrome on the Mac; Windows relative-motion discontinuities were reproduced as injected event sequences in the Node checks. Physical Windows mouse behaviour and physical iPhone Safari were not tested.
 - Inspected the actual rendered sight and inward-facing service rig. No uncaught browser errors were reported.
 
+## Maintenance hall art pass — v0.1.1, BUILD a3a4c05f
+
+Validated on 2026-11-16 in managed Chrome on the Mac. All 20 Node checks and all 42 browser checks passed on the release implementation (16 mission, 16 input, 10 art/audio).
+
+- The rebuilt hall was tested through the existing mission, including real raycasts, both waves, falling cargo, gate travel, win/death and restart.
+- A continuous keyboard walk from the maintenance deck reached the relocated console, without teleportation through the new props. The hall landmarks are shared between world construction, gameplay and QA.
+- The actual weapon sight was checked in desktop and portrait aiming. The independent magazine withdraws/reseats and the bolt returns to its rest position on restart. The new reload pose was visually inspected to ensure the moving magazine remains visible.
+- High/low quality toggling removes and restores the planar reflection. No failed shader programs or uncaught browser errors were found in the tested flows.
+- Offline Web Audio rendering produced finite, unclipped samples; a source on the left was stronger in the left channel, and the room tail persisted after the dry source ended. This is an output correctness check, not a subjective listening review.
+- Inspected rendered spawn, middle-aisle, side and aimed views, plus the reload pose and a 390 × 740 portrait preview. Multitouch regression checks used a 390 × 844 same-origin iframe. Physical iPhone Safari and Windows mouse testing remains outstanding.
+
+The paused archive/hound drafts are not imported, committed in this art branch, or included in the distribution. This pass adds no new mission content.
+
 ## Distribution
 
 The distributable is a single index.html including Three.js, generated geometry, shaders, textures and procedural Web Audio. There are no external game assets, fonts, runtime libraries or backend requirements. Development dependencies are locked in package-lock.json.
