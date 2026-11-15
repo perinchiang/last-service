@@ -21,8 +21,6 @@
 
 Removed the three translucent cone meshes from the left aisle after visual feedback. Compared the same camera position before and after in Chrome: the conspicuous cone silhouettes are gone, the actual lights and floor reflection remain, and no uncaught browser errors occurred. All 5 Node checks passed on the rebuilt single-file distribution.
 
-## Delivery
-
 ## Input and service rig refinement — BUILD `ed6911ca`
 
 - 19 Node checks passed: mouse-button chords in both orders, independent release, raw-input fallback and duplicate lock prevention, transition/jump filtering, bounded accumulated motion, focus loss, touch tap/hold/cancel/multitouch, sight alignment through recoil and portrait scaling, central-deck height and mirrored inward service claws.
