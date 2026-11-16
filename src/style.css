@@ -2,3 +2,80 @@
 .touch-mode .desktop{display:none}.touch-mode .touch-only{display:block}.touch-mode .titlebadge{display:none}.touch-mode .vitals{bottom:30px;left:30px}.touch-mode .ammo{bottom:30px;right:30px}.touch-mode .vitals b,.touch-mode .ammo b{font-size:23px}.touch-mode .hp-track{width:80px}.touch-mode .hudlabel{font-size:8px}
 
 .sensitivity{display:flex;align-items:center;gap:10px;font-size:11px;color:#a5b8b4;margin-top:15px}.sensitivity input{width:110px;max-width:38vw;accent-color:#dfaa68}.sensitivity output{font:11px monospace;min-width:35px}.touch-mode .sensitivity{display:none}@media(pointer:coarse){.sensitivity{display:none}}.aiming #crosshair i{opacity:0}.aiming #crosshair b{background:#ff6952}#fireTouch small{display:block;font-size:8px;opacity:.75;margin-top:3px}
+
+/* Optical diagnostics: full boot readout, brief event cards during play. */
+#diagnosticDeck{position:fixed;inset:0;z-index:7;pointer-events:none}
+.system-panel{position:fixed;pointer-events:none;color:#d9e7dd;background:linear-gradient(140deg,#071c20ed,#061116db);border:1px solid #8ed6c34d;box-shadow:0 0 22px #53d8c510;backdrop-filter:blur(6px);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,10px 100%,0 calc(100% - 10px));overflow:hidden}
+.system-panel:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(#97e8d2,#97e8d2) left top/28px 1px no-repeat,linear-gradient(#97e8d2,#97e8d2) right bottom/28px 1px no-repeat}
+.diagnostic-boot #diagnosticDeck{inset:17% 4% auto;display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.diagnostic-boot .system-panel{position:relative}
+#diagnostics{width:min(440px,42vw);padding:15px 18px}
+#telemetry{width:min(280px,30vw);padding:14px 16px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:9px;border-bottom:1px solid #86cbbb38;color:#9ed9cb;font:11px/1.5 monospace;letter-spacing:.04em}
+.panel-head b{font-weight:400;color:#e3b778;white-space:nowrap}
+#traceLines{display:grid;gap:10px;margin-top:12px}
+.trace-row{display:grid;gap:3px;font:13px/1.55 "SFMono-Regular",Consolas,monospace;animation:trace-in .22s ease-out both}
+.trace-code{color:#86cbbd;font-size:10px;letter-spacing:.03em;overflow-wrap:anywhere}.trace-copy{color:#e1e7d9;overflow-wrap:anywhere}
+@keyframes trace-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.diag-target{display:grid;gap:6px;margin-top:14px;padding:10px 12px;border-left:2px solid #e5b56e;background:#dba75c0d;animation:trace-in .3s ease-out both}
+.diag-target span{color:#e0b271;font:10px monospace;letter-spacing:.12em}.diag-target b{font-size:13px;font-weight:500}
+.diag-progress{height:2px;margin-top:14px;background:#76b7aa2b}.diag-progress i{display:block;width:100%;height:100%;background:#70cab6;transform:scaleX(0);transform-origin:left;transition:transform .15s linear;box-shadow:0 0 8px #67dcc4}
+.telemetry-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:9px 0 7px;border-bottom:1px solid #89c7b21c;font:12px/1.5 monospace}.telemetry-row span{color:#aac5bc;white-space:nowrap}.telemetry-row b{color:#e0e5d9;font-weight:400;text-align:right}.telemetry-row[data-state="warning"] b{color:#e5bb7d}.telemetry-row[data-state="locked"] b{color:#e6a489}.telemetry-row[data-state="active"] b{color:#85e4c6}.telemetry-row[data-state="standby"] b{color:#b6ccbf}.telemetry-row[data-state="pending"] b{color:#829d95}
+#diagnostics.live{top:max(108px,calc(env(safe-area-inset-top) + 90px));left:30px;width:min(340px,36vw);padding:12px 14px;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.diagnostic-active #diagnostics.live{opacity:1;visibility:visible}
+#diagnostics.live #traceLines{gap:9px;margin-top:9px}
+#diagnostics.live .trace-row:not(:nth-last-child(-n+2)){display:none}
+#diagnostics.live .trace-row{font-size:12px}
+#diagnostics.live .diag-progress,#diagnostics.live .diag-target{display:none}
+#telemetry.monitoring{top:max(78px,calc(env(safe-area-inset-top) + 64px));right:30px;width:220px;padding:8px 12px}
+#telemetry.monitoring .panel-head,#telemetry.monitoring .telemetry-row:not([data-telemetry="clock"]):not([data-telemetry="authorization"]){display:none}
+#telemetry.monitoring .telemetry-row{font-size:11px;padding:5px 0}
+@media(max-width:700px) and (orientation:portrait){
+ .diagnostic-boot #diagnosticDeck{inset:12% 5% auto;display:grid;gap:14px;justify-content:stretch}
+ .diagnostic-boot #diagnostics,.diagnostic-boot #telemetry{width:100%;padding:12px}
+ .diagnostic-boot .trace-row{grid-template-columns:34% 1fr;gap:9px;font-size:12px;align-items:center}
+ .diagnostic-boot .trace-code{font-size:10px}
+ .diagnostic-boot #traceLines{gap:9px}
+ .diagnostic-boot #telemetry{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
+ .diagnostic-boot #telemetry .panel-head{grid-column:1/-1}
+ .diagnostic-boot .telemetry-row{font-size:11px;padding:6px 0;gap:5px}
+ .diagnostic-boot .telemetry-row[data-telemetry="authorization"]{grid-column:1/-1}
+ #telemetry.monitoring{top:max(90px,calc(env(safe-area-inset-top) + 80px));left:12px;right:12px;width:auto;padding:5px 10px;display:flex;gap:16px;justify-content:space-between}
+ #telemetry.monitoring .telemetry-row{gap:6px;padding:3px 0;border:0}
+ #diagnostics.live{top:max(134px,calc(env(safe-area-inset-top) + 124px));left:12px;right:12px;width:auto;padding:9px 11px}
+ #diagnostics.live .trace-row:not(:last-child){display:none}
+ #diagnostics.live .trace-row{gap:2px;font-size:12px}
+ #diagnostics.live .panel-head{font-size:10px;padding-bottom:5px}
+ #diagnostics.live #traceLines{margin-top:7px}
+ #notice{top:43%;width:90%;font-size:11px}
+ .touch-mode #caption{bottom:215px}
+ #skip{right:5%;bottom:10%}
+}
+@media(max-width:700px) and (max-height:660px) and (orientation:portrait){
+ .diagnostic-boot #diagnosticDeck{top:10%;gap:10px}
+ .diagnostic-boot #traceLines{gap:6px;margin-top:8px}
+ .diagnostic-boot .trace-row:first-child:nth-last-child(4){display:none}
+ .diagnostic-boot .diag-target{margin-top:9px;padding:7px 9px}
+ .diagnostic-boot .diag-progress{margin-top:9px}
+ .diagnostic-boot .telemetry-row{padding:4px 0}
+}
+@media(max-height:540px) and (orientation:landscape){
+ .diagnostic-boot #diagnosticDeck{inset:12% 4% auto}
+ .diagnostic-boot #diagnostics{width:52%;padding:10px 12px}
+ .diagnostic-boot #telemetry{width:37%;padding:10px 12px}
+ .diagnostic-boot .trace-row{grid-template-columns:38% 1fr;gap:8px;font-size:12px;align-items:center}
+ .diagnostic-boot #traceLines{gap:7px;margin-top:8px}
+ .diagnostic-boot .telemetry-row{font-size:11px;padding:5px 0}
+ .diagnostic-boot .diag-target{margin-top:9px;padding:7px 9px}
+ .diagnostic-boot .diag-target b{font-size:12px}
+ .diagnostic-boot .diag-progress{margin-top:9px}
+ #diagnostics.live{top:88px;width:33%;padding:8px 10px}
+ #diagnostics.live .panel-head{font-size:10px;padding-bottom:5px}
+ #diagnostics.live .trace-row:not(:last-child){display:none}
+ #diagnostics.live .trace-row{font-size:12px}
+ #telemetry.monitoring{top:65px;width:195px;padding:5px 10px}
+ #telemetry.monitoring .telemetry-row{padding:3px 0}
+ #notice{top:20%;max-width:45%;font-size:11px}
+ #skip{bottom:10%;padding:7px 12px}
+}
+@media(prefers-reduced-motion:reduce){.trace-row,.diag-target{animation:none}.diag-progress i,#diagnostics.live{transition:none}}

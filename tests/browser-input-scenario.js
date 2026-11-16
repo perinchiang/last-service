@@ -15,7 +15,7 @@ async () => {
  g.begin(true);g.input.keys.add('KeyW');for(let i=0;i<70;i++)g.step(.025,false);g.input.reset();
  check('The player walks off the deck without getting stuck',g.snapshot.player.z<spawn.z-4.8&&Math.abs(g.snapshot.player.y-1.72)<.03);
  g.begin(false);g.step(.3,false);check('Awakening uses the same central position',g.camera.position.x===spawn.x&&g.camera.position.z===spawn.z);
- for(let i=0;i<70;i++)g.step(.1,false);
+ for(let i=0;i<108;i++)g.step(.1,false);
  check('Awakening lowers the lift and enters play',g.state==='play'&&Math.abs(g.world.serviceLift.position.y+1.78)<.001);
  const tips=g.world.arms.map(a=>a.tip.getWorldPosition(a.tip.position.clone()));
  check('Service claws retract clear of the player',tips[0].x<spawn.x-2&&tips[1].x>spawn.x+2);

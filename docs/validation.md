@@ -41,6 +41,20 @@ Validated on 2026-11-16 in managed Chrome on the Mac. All 20 Node checks and all
 
 The paused archive/hound drafts are not imported, committed in this art branch, or included in the distribution. This pass adds no new mission content.
 
+## Startup diagnosis and cognitive HUD — v0.1.2, BUILD 63c9e84d
+
+Validated on 2026-11-17 in an isolated Chrome session on the Mac. The rebuilt single-file game passed all 24 Node checks and all 63 browser checks: 16 mission, 16 input, 10 art/audio and 21 diagnostic lifecycle checks.
+
+- The robot begins reclining and looking upward. It remains motionless through goal formation; the lift and camera begin moving only after 7.4 seconds, with control transferred at approximately 10.8 seconds. Skipping initializes the same telemetry, tool and mission state.
+- The boot interface reveals scripted sensor readings, semantic calls/results, local authorization and a supervisor-search goal. Facility time is explicitly unsynchronized; no host time, live AI or Python execution is involved.
+- Actual shot events are aggregated after roughly 30 seconds, not printed individually. Idle time produces no filler. Repeated inspections do not duplicate rejection logs. Important events appear immediately and the card yields the view after seven seconds.
+- The maintenance pulse can release the interlock and cargo. The robot's local safety controller allows security-target damage during the combat phase; clearing the threat revokes the exception. Integrity follows actual damage.
+- Pause, resume, defeat, title return and restart were exercised. Old telemetry, diagnostic events, damage overlays and active-log presentation do not leak into a new boot. Existing enemy waves, cargo collision, opening the gate, aiming, reload and touch gestures still pass.
+- Inspected boot and combat screenshots at 1280 × 720, 844 × 390, 390 × 844 and 320 × 568. Measured that the boot panels do not overlap each other or the skip button, combat panels leave the reticle clear, and the subtitle avoids the reload control. On portrait phones, persistent telemetry becomes one row and the event card shows only the newest entry.
+- No uncaught JavaScript errors appeared in the tested flows. These are Chrome correctness and layout checks, including simulated touch handlers; physical iPhone Safari performance, Windows mouse behavior, reading pace and subjective combat enjoyment still need human playtesting.
+
+Repeat the browser checks by serving the rebuilt game, opening it with `?qa=1`, and evaluating each function from `tests/browser-{scenario,input-scenario,art-scenario,diagnostics-scenario}.js` in that page. These helpers are excluded from the runtime build; QA controls are only exposed when the query parameter is present.
+
 ## Distribution
 
 The distributable is a single index.html including Three.js, generated geometry, shaders, textures and procedural Web Audio. There are no external game assets, fonts, runtime libraries or backend requirements. Development dependencies are locked in package-lock.json.
